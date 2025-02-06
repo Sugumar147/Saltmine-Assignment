@@ -10,10 +10,14 @@ class ShoppingCart {
     async addProductToCart(product, quantity) {
         
         try {
+            if(quantity < 1) {
+                throw new Error("Quantity must be at least 1");
+            }
+
             const response = await fetch(this.apiBaseUrl + product);
 
-            if(!response.ok || quantity < 1) {
-                throw new Error();
+            if(!response.ok) {
+                throw new Error("Product not found.");
             }
 
             const data = await response.json();
@@ -27,7 +31,11 @@ class ShoppingCart {
             console.log(`${quantity} x ${product} added at $${data.price} each.`);
         }
         catch (error) {
-            console.error("Please provide a valid product and quantity.");
+            if(error.message === "Quantity must be at least 1") {
+                console.error(error.message);
+            } else {
+                console.error(error.message);
+            }
         }
     }
 
